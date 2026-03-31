@@ -85,64 +85,16 @@ void deleteTree(TreeNode* root) {
 }
 
 int main() {
-    string line;
-    vector<int> levelOrder;
-    int cnt = 0;
+    int n, cnt;
 
-    // Read first line
-    if (!getline(cin, line)) {
-        return 1;
-    }
+    // Read number of nodes and cnt
+    cin >> n >> cnt;
 
-    // Parse the tree array
-    // Remove any brackets and parse numbers
-    string cleanLine;
-    for (char c : line) {
-        if (c == '[' || c == ']' || c == ',') {
-            cleanLine += ' ';
-        } else {
-            cleanLine += c;
-        }
-    }
+    vector<int> levelOrder(n);
 
-    stringstream ss(cleanLine);
-    string token;
-    while (ss >> token) {
-        if (token == "root" || token == "=" || token == "cnt") {
-            continue;
-        }
-        if (token == "null") {
-            levelOrder.push_back(-1);
-        } else {
-            try {
-                int val = stoi(token);
-                levelOrder.push_back(val);
-            } catch (...) {
-                // Skip invalid tokens
-            }
-        }
-    }
-
-    // Read second line if it exists (might contain cnt)
-    if (getline(cin, line)) {
-        // Extract cnt from second line
-        stringstream ss2(line);
-        string token2;
-        while (ss2 >> token2) {
-            if (token2 == "cnt" || token2 == "=") {
-                continue;
-            }
-            try {
-                cnt = stoi(token2);
-                break;
-            } catch (...) {
-                // Skip invalid tokens
-            }
-        }
-    } else if (!levelOrder.empty()) {
-        // If no second line, assume cnt is the last number in levelOrder
-        cnt = levelOrder.back();
-        levelOrder.pop_back();
+    // Read all node values
+    for (int i = 0; i < n; i++) {
+        cin >> levelOrder[i];
     }
 
     // Build tree and find result
