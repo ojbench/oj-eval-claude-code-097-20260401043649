@@ -84,21 +84,37 @@ void deleteTree(TreeNode* root) {
     delete root;
 }
 
+// Insert a value into BST
+TreeNode* insert(TreeNode* root, int val) {
+    if (root == nullptr) {
+        return new TreeNode(val);
+    }
+
+    if (val < root->val) {
+        root->left = insert(root->left, val);
+    } else if (val > root->val) {
+        root->right = insert(root->right, val);
+    }
+
+    return root;
+}
+
 int main() {
     int n, cnt;
 
-    // Read number of nodes and cnt
+    // Read number of values and cnt
     cin >> n >> cnt;
 
-    vector<int> levelOrder(n);
+    TreeNode* root = nullptr;
 
-    // Read all node values
+    // Read values and build BST
     for (int i = 0; i < n; i++) {
-        cin >> levelOrder[i];
+        int val;
+        cin >> val;
+        root = insert(root, val);
     }
 
-    // Build tree and find result
-    TreeNode* root = buildTree(levelOrder);
+    // Find k-th largest
     int result = findKthLargest(root, cnt);
 
     cout << result << endl;
