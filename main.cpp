@@ -86,49 +86,64 @@ void deleteTree(TreeNode* root) {
 
 int main() {
     string line;
-    getline(cin, line);
+    vector<int> levelOrder;
+    int cnt = 0;
 
-    // Parse input
-    size_t rootPos = line.find("root = [");
-    size_t cntPos = line.find("cnt = ");
-
-    if (rootPos == string::npos || cntPos == string::npos) {
+    // Read first line
+    if (!getline(cin, line)) {
         return 1;
     }
 
-    // Extract root array
-    size_t startBracket = line.find('[', rootPos);
-    size_t endBracket = line.find(']', startBracket);
-    string rootStr = line.substr(startBracket + 1, endBracket - startBracket - 1);
+    // Parse the tree array
+    // Remove any brackets and parse numbers
+    string cleanLine;
+    for (char c : line) {
+        if (c == '[' || c == ']' || c == ',') {
+            cleanLine += ' ';
+        } else {
+            cleanLine += c;
+        }
+    }
 
-    vector<int> levelOrder;
-    stringstream ss(rootStr);
+    stringstream ss(cleanLine);
     string token;
-    while (getline(ss, token, ',')) {
-        // Trim whitespace
-        size_t start = token.find_first_not_of(" \t");
-        size_t end = token.find_last_not_of(" \t");
-        if (start != string::npos && end != string::npos) {
-            token = token.substr(start, end - start + 1);
-            if (token == "null") {
-                levelOrder.push_back(-1);
-            } else {
-                levelOrder.push_back(stoi(token));
+    while (ss >> token) {
+        if (token == "root" || token == "=" || token == "cnt") {
+            continue;
+        }
+        if (token == "null") {
+            levelOrder.push_back(-1);
+        } else {
+            try {
+                int val = stoi(token);
+                levelOrder.push_back(val);
+            } catch (...) {
+                // Skip invalid tokens
             }
         }
     }
 
-    // Extract cnt
-    size_t cntStart = cntPos + 6;
-    string cntStr;
-    for (size_t i = cntStart; i < line.length(); i++) {
-        if (isdigit(line[i])) {
-            cntStr += line[i];
-        } else if (!cntStr.empty()) {
-            break;
+    // Read second line if it exists (might contain cnt)
+    if (getline(cin, line)) {
+        // Extract cnt from second line
+        stringstream ss2(line);
+        string token2;
+        while (ss2 >> token2) {
+            if (token2 == "cnt" || token2 == "=") {
+                continue;
+            }
+            try {
+                cnt = stoi(token2);
+                break;
+            } catch (...) {
+                // Skip invalid tokens
+            }
         }
+    } else if (!levelOrder.empty()) {
+        // If no second line, assume cnt is the last number in levelOrder
+        cnt = levelOrder.back();
+        levelOrder.pop_back();
     }
-    int cnt = stoi(cntStr);
 
     // Build tree and find result
     TreeNode* root = buildTree(levelOrder);
