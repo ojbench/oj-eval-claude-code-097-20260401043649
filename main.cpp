@@ -100,10 +100,10 @@ TreeNode* insert(TreeNode* root, int val) {
 }
 
 int main() {
-    int n, cnt;
+    int cnt, n;
 
-    // Read number of values and cnt
-    cin >> n >> cnt;
+    // Read cnt and n (possibly on separate lines or same line)
+    cin >> cnt >> n;
 
     TreeNode* root = nullptr;
 
